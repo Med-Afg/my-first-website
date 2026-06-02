@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedShare - Medical Resource Hub</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar and slight animations */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #0ea5e9; border-radius: 4px; }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-heartbeat text-3xl text-sky-500"></i>
+                <span class="text-2xl font-bold text-slate-800">Med<span class="text-sky-500">Share</span></span>
+            </div>
+            <div class="space-x-4">
+                <a href="#resources" class="text-slate-600 hover:text-sky-500 transition">Resources</a>
+                <button onclick="openUploadModal()" class="bg-sky-500 text-white px-4 py-2 rounded-full hover:bg-sky-600 transition shadow-lg shadow-sky-200">
+                    <i class="fas fa-upload mr-2"></i>Upload
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-r from-sky-500 to-blue-600 text-white py-20 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-5xl font-bold mb-4">Empowering Medical Students</h1>
+            <p class="text-xl opacity-90 mb-8">Access and share lecture notes, books, and past questions for free.</p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-xl mx-auto bg-white rounded-full shadow-xl flex overflow-hidden">
+                <input type="text" id="searchInput" onkeyup="filterResources()" placeholder="Search for resources (e.g., Anatomy, PDF)..." class="w-full px-6 py-4 text-slate-700 focus:outline-none">
+                <button class="bg-blue-600 px-6 hover:bg-blue-700 transition">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- Category Filters -->
+        <div class="flex flex-wrap gap-3 mb-8">
+            <button onclick="filterByCategory('all')" class="filter-btn active bg-sky-100 text-sky-700 px-4 py-2 rounded-full text-sm font-medium hover:bg-sky-200 transition">All Resources</button>
+            <button onclick="filterByCategory('anatomy')" class="filter-btn bg-slate-100 text-slate-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-200 transition">Anatomy</button>
+            <button onclick="filterByCategory('pharmacology')" class="filter-btn bg-slate-100 text-slate-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-200 transition">Pharmacology</button>
+            <button onclick="filterByCategory('pathology')" class="filter-btn bg-slate-100 text-slate-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-200 transition">Pathology</button>
+            <button onclick="filterByCategory('books')" class="filter-btn bg-slate-100 text-slate-600 px-4 py-2 rounded-full text-sm font-medium hover:bg-slate-200 transition">Textbooks</button>
+        </div>
+
+        <!-- Resource Grid -->
+        <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards will be injected here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Upload Modal (Popup) -->
+    <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg m-4 overflow-hidden fade-in">
+            <div class="bg-sky-500 p-6 text-white flex justify-between items-center">
+                <h2 class="text-xl font-bold"><i class="fas fa-cloud-upload-alt mr-2"></i>Upload Resource</h2>
+                <button onclick="closeUploadModal()" class="text-white hover:text-sky-200"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form id="uploadForm" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Resource Title</label>
+                    <input type="text" id="resTitle" class="w-full border-slate-300 rounded-lg focus:ring-sky-500 focus:border-sky-500" placeholder="e.g., Gray's Anatomy PDF">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Category</label>
+                    <select id="resCategory" class="w-full border-slate-300 rounded-lg focus:ring-sky-500 focus:border-sky-500">
+                        <option value="anatomy">Anatomy</option>
+                        <option value="pharmacology">Pharmacology</option>
+                        <option value="pathology">Pathology</option>
+                        <option value="books">Textbooks</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">File Type</label>
+                    <select id="resType" class="w-full border-slate-300 rounded-lg">
+                        <option value="PDF">PDF</option>
+                        <option value="PPT">PowerPoint</option>
+                        <option value="DOC">Document</option>
+                        <option value="IMG">Image</option>
+                    </select>
+                </div>
+                <div class="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-sky-500 transition cursor-pointer">
+                    <input type="file" id="fileInput" class="hidden">
+                    <i class="fas fa-file-medical text-4xl text-slate-300 mb-2"></i>
+                    <p class="text-slate-500">Click to select file (Simulated)</p>
+                </div>
+                <button type="submit" class="w-full bg-sky-500 text-white py-3 rounded-lg font-semibold hover:bg-sky-600 transition">
+                    Submit Resource
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 py-8 mt-12 text-center">
+        <p>&copy; 2023 MedShare. Designed for Students.</p>
+        <p class="text-xs mt-2">Disclaimer: This is a template. Files are stored locally in the browser simulation.</p>
+    </footer>
+
+    <script>
+        // --- Dummy Data (Simulated Database) ---
+        let resources = [
+            { id: 1, title: "Gray's Anatomy for Students", category: "anatomy", type: "PDF", date: "2023-10-12", downloads: 1500 },
+            { id: 2, title: "Lippincott Pharmacology", category: "pharmacology", type: "PDF", date: "2023-09-01", downloads: 2200 },
+            { id: 3, title: "Pathoma Lecture Slides", category: "pathology", type: "PPT", date: "2023-11-05", downloads: 980 },
+            { id: 4, title: "Clinical Medicine Handbook", category: "books", type: "PDF", date: "2023-08-20", downloads: 450 },
+            { id: 5, title: "Head & Neck Anatomy Charts", category: "anatomy", type: "IMG", date: "2023-10-10", downloads: 320 },
+            { id: 6, title: "Drug Interaction Cheat Sheet", category: "pharmacology", type: "PDF", date: "2023-10-15", downloads: 1100 },
+        ];
+
+        // --- Render Functions ---
+        const grid = document.getElementById('resourceGrid');
+
+        function renderCards(data) {
+            grid.innerHTML = '';
+            data.forEach(item => {
+                const typeColors = {
+                    'PDF': 'bg-red-100 text-red-600',
+                    'PPT': 'bg-orange-100 text-orange-600',
+                    'DOC': 'bg-blue-100 text-blue-600',
+                    'IMG': 'bg-green-100 text-green-600'
+                };
+
+                const card = `
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden border border-slate-100 fade-in">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="text-xs font-bold px-2 py-1 rounded ${typeColors[item.type]}">${item.type}</span>
+                                <span class="text-xs text-slate-400">${item.date}</span>
+                            </div>
+                            <h3 class="font-bold text-lg text-slate-800 mb-2">${item.title}</h3>
+                            <p class="text-sm text-slate-500 capitalize mb-4">${item.category}</p>
+                            <div class="flex justify-between items-center pt-4 border-t border-slate-100">
+                                <span class="text-xs text-slate-400"><i class="fas fa-download mr-1"></i> ${item.downloads} Downloads</span>
+                                <button onclick="downloadResource('${item.title}')" class="bg-sky-50 text-sky-600 px-4 py-2 rounded-full text-sm font-semibold hover:bg-sky-100 transition">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += card;
+            });
+        }
+
+        // --- Functionalities ---
+
+        // Initial Render
+        renderCards(resources);
+
+        // Search Function
+        function filterResources() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = resources.filter(r => 
+                r.title.toLowerCase().includes(searchTerm) || 
+                r.category.toLowerCase().includes(searchTerm)
+            );
+            renderCards(filtered);
+        }
+
+        // Category Filter
+        function filterByCategory(cat) {
+            // Update button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-sky-100', 'text-sky-700');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            event.target.classList.remove('bg-slate-100', 'text-slate-600');
+            event.target.classList.add('bg-sky-100', 'text-sky-700');
+
+            // Filter logic
+            if (cat === 'all') {
+                renderCards(resources);
+            } else {
+                const filtered = resources.filter(r => r.category === cat);
+                renderCards(filtered);
+            }
+        }
+
+        // Modal Controls
+        function openUploadModal() {
+            document.getElementById('uploadModal').classList.remove('hidden');
+            document.getElementById('uploadModal').classList.add('flex');
+        }
+
+        function closeUploadModal() {
+            document.getElementById('uploadModal').classList.add('hidden');
+            document.getElementById('uploadModal').classList.remove('flex');
+        }
+
+        // Simulate Download
+        function downloadResource(title) {
+            alert(`Download started for: ${title}\n\n(Note: In a real website, this would download the actual file).`);
+        }
+
+        // Handle Upload Form Submit
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('resTitle').value;
+            const category = document.getElementById('resCategory').value;
+            const type = document.getElementById('resType').value;
+
+            if(!title) return alert("Please enter a title");
+
+            const newItem = {
+                id: resources.length + 1,
+                title: title,
+                category: category,
+                type: type,
+                date: new Date().toISOString().split('T')[0],
+                downloads: 0
+            };
+
+            resources.unshift(newItem);
+            renderCards(resources);
+            closeUploadModal();
+            document.getElementById('resTitle').value = "";
+            alert("Resource uploaded successfully!");
+        });
+    </script>
+</body>
+</html>
+
+
+
