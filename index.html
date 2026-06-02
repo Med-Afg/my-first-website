@@ -69,29 +69,12 @@
         </div>
 
         <!-- Resource Grid -->
-        let resources = [
-    { 
-        id: 1, 
-        title: "Atlas of Human Anatomy.pdf", 
-        category: "anatomy", 
-        type: "PDF", 
-        // Point to the file you uploaded in the 'files' folder
-        link: "./Atlas of Human Anatomy.pdf", 
-        date: "2023-10-12", 
-        downloads: 0 
-    },
-    // ... add more items
-];
         <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Cards will be injected here by JavaScript -->
         </div>
     </main>
 
     <!-- Upload Modal (Popup) -->
-    function openUploadModal() {
-    // Replace with your actual Google Form link
-    window.open('https://forms.google.comhttps://forms.gle/jQePHgybuPE4PQcH8', '_blank');
-}
     <div id="uploadModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg m-4 overflow-hidden fade-in">
             <div class="bg-sky-500 p-6 text-white flex justify-between items-center">
@@ -231,11 +214,6 @@
         }
 
         // Simulate Download
-        // Simulate Download
-function downloadResource(item) {
-    // Instead of an alert, open the actual file link
-    window.open(https://drive.google.com/file/d/17eIbFeCSsqQchpEdVADU3xQ6bCSE9F8y/view?usp=drive_link, '_blank');
-}
         function downloadResource(title) {
             alert(`Download started for: ${title}\n\n(Note: In a real website, this would download the actual file).`);
         }
@@ -267,8 +245,3 @@ function downloadResource(item) {
     </script>
 </body>
 </html>
-// Pseudo-code for real upload
-const storageRef = ref(storage, 'files/' + file.name);
-uploadBytes(storageRef, file).then((snapshot) => {
-   console.log('Uploaded a blob or file!');
-});
