@@ -69,6 +69,19 @@
         </div>
 
         <!-- Resource Grid -->
+        let resources = [
+    { 
+        id: 1, 
+        title: "Atlas of Human Anatomy.pdf", 
+        category: "anatomy", 
+        type: "PDF", 
+        // Point to the file you uploaded in the 'files' folder
+        link: "./Atlas of Human Anatomy.pdf", 
+        date: "2023-10-12", 
+        downloads: 0 
+    },
+    // ... add more items
+];
         <div id="resourceGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Cards will be injected here by JavaScript -->
         </div>
@@ -214,6 +227,11 @@
         }
 
         // Simulate Download
+        // Simulate Download
+function downloadResource(item) {
+    // Instead of an alert, open the actual file link
+    window.open(https://drive.google.com/file/d/17eIbFeCSsqQchpEdVADU3xQ6bCSE9F8y/view?usp=drive_link, '_blank');
+}
         function downloadResource(title) {
             alert(`Download started for: ${title}\n\n(Note: In a real website, this would download the actual file).`);
         }
