@@ -1,3 +1,23 @@
+name: Deploy to Pages  # This is the name
+
+on:
+  push:
+    branches: ["main"]  # This tells it when to run
+
+# --- ADD THE PERMISSIONS BLOCK RIGHT HERE ---
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+# ---------------------------------------------
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # ... rest of your steps
 <!DOCTYPE html>
 <html lang="en">
 <head>
