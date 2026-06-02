@@ -267,4 +267,8 @@ function downloadResource(item) {
     </script>
 </body>
 </html>
-
+// Pseudo-code for real upload
+const storageRef = ref(storage, 'files/' + file.name);
+uploadBytes(storageRef, file).then((snapshot) => {
+   console.log('Uploaded a blob or file!');
+});
